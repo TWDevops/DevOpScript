@@ -6,7 +6,7 @@ apiManIp="127.0.0.1"
 apiManPort="3000"
 
 #取得 task list
-taskJson=$($CURLCMD http://$apiManIp:$apiManPort/mod/task/gettask/deploy)
+taskJson=$($CURLCMD "http://$apiManIp:$apiManPort/mod/task/gettask/deploy")
 #echo $json_input
 #ping $(echo $json_input|$JQCMD -r '.taskParams.apServIp')
 taskId=$(echo $taskJson|$JQCMD -r '._id')
@@ -25,7 +25,7 @@ if [ "$taskId" == "null" ]; then
 fi
 
 #鎖定task
-startJson=$($CURLCMD http://$apiManIp:$apiManPort/mod/task/setTask/$taskId/start)
+startJson=$($CURLCMD "http://$apiManIp:$apiManPort/mod/task/setTask/$taskId/start")
 echo $startJson
 startState=$(echo $startJson|$JQCMD -r '.state')
 startnModified=$(echo $startJson|$JQCMD -r '.nModified')
@@ -45,7 +45,7 @@ fi
 $BASEDIR/testdeploy.sh $apServIp $srcPath
 
 #結束task
-doneJson=$($CURLCMD http://$apiManIp:$apiManPort/mod/task/setTask/$taskId/done)
+doneJson=$($CURLCMD "http://$apiManIp:$apiManPort/mod/task/setTask/$taskId/done")
 echo $doneJson
 doneState=$(echo $doneJson|$JQCMD -r '.state')
 donenModified=$(echo $doneJson|$JQCMD -r '.nModified')
@@ -60,7 +60,8 @@ if [ "$donenModified" == "0" ]; then
 fi
 
 #變更api deploy 狀態
-upDeployStJson=$($CURLCMD http://$apiManIp:$apiManPort/mod/api/updatelv/$apiId/$apiVerDeploy/$apiVerIdx)
+echo "http://$apiManIp:$apiManPort/mod/api/updatelv/$apiId/$apiVerDeploy/$apiVerIdx"
+upDeployStJson=$($CURLCMD "http://$apiManIp:$apiManPort/mod/api/updatelv/$apiId/$apiVerDeploy/$apiVerIdx")
 upDeployState=$(echo $upDeployStJson|$JQCMD -r '.state')
 upDeployModified=$(echo $upDeployStJson|$JQCMD -r '.result.nModified')
 if [ "$upDeployState" != "0" ]; then
