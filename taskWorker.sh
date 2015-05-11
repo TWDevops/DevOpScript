@@ -41,8 +41,26 @@ if [ "$startnModified" == "0" ]; then
     exit 1
 fi
 
+#Set AS Server Off-line
+curl -s -o /dev/null -d {"status":1} http://$apServIp:9763/ServStat
+until [ "$nxstatus" == "down" ]
+do
+	/bin/sleep 3
+	nxstatus=$(curl -s "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("$apServIp")) | .status')
+	echo "nxstatus=$nxstatus"
+done
+
 #執行 Deploy
-$BASEDIR/testdeploy.sh $apServIp $srcPath
+echo "$BASEDIR/testdeploy.sh $apServIp $srcPath"
+
+#Set AS Server Off-line
+curl -s -o /dev/null -d {"status":0} http://$apServIp:9763/ServStat
+until [ "$nxstatus" == "up" ]
+do
+	/bin/sleep 3
+	nxstatus=$(curl -s "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("$apServIp")) | .status')
+	echo "nxstatus=$nxstatus"
+done
 
 #結束task
 doneJson=$($CURLCMD "http://$apiManIp:$apiManPort/mod/task/setTask/$taskId/done")
@@ -76,3 +94,4 @@ fi
 
 echo "Deploy Success."
 exit 0
+
