@@ -2,8 +2,12 @@
 BASEDIR=$(dirname $0)
 CURLCMD="/usr/bin/curl -s"
 JQCMD="/usr/bin/jq"
-#apiManIp="127.0.0.1"
-apiManIp="10.240.1.164"
+
+if [ "$devops_env" == "google" ]; then
+	apiManIp="10.240.1.164"
+else
+	apiManIp="127.0.0.1"
+fi
 apiManPort="3000"
 
 #取得 task list
@@ -52,8 +56,11 @@ do
 done
 
 #執行 Deploy
-echo "$BASEDIR/testdeploy.sh $apServIp $srcPath"
-
+if [ "$devops_env" == "google" ]; then
+	$BASEDIR/testdeploy.sh $apServIp $srcPath
+else
+	echo "$BASEDIR/testdeploy.sh $apServIp $srcPath"
+fi
 #Set AS Server On-line
 $CURLCMD -o /dev/null -d {"status":0} http://$apServIp:9763/ServStat
 until [ "$nxstatus" == "up" ]
