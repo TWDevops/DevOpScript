@@ -47,7 +47,7 @@ $CURLCMD -o /dev/null -d {"status":1} http://$apServIp:9763/ServStat
 until [ "$nxstatus" == "down" ]
 do
 	/bin/sleep 3
-	nxstatus=$($CURLCMD "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("$apServIp")) | .status')
+	nxstatus=$($CURLCMD "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("'$apServIp'")) | .status')
 	echo "nxstatus=$nxstatus"
 done
 
