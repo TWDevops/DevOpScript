@@ -54,12 +54,12 @@ done
 #執行 Deploy
 echo "$BASEDIR/testdeploy.sh $apServIp $srcPath"
 
-#Set AS Server Off-line
+#Set AS Server On-line
 $CURLCMD -o /dev/null -d {"status":0} http://$apServIp:9763/ServStat
 until [ "$nxstatus" == "up" ]
 do
 	/bin/sleep 3
-	nxstatus=$($CURLCMD "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("$apServIp")) | .status')
+	nxstatus=$($CURLCMD "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("'$apServIp'")) | .status')
 	echo "nxstatus=$nxstatus"
 done
 
