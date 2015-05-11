@@ -1,8 +1,9 @@
 #!/bin/bash
 BASEDIR=$(dirname $0)
-CURLCMD="/usr/bin/curl"
+CURLCMD="/usr/bin/curl -s"
 JQCMD="/usr/bin/jq"
-apiManIp="127.0.0.1"
+#apiManIp="127.0.0.1"
+apiManIp="10.240.1.164"
 apiManPort="3000"
 
 #取得 task list
@@ -42,11 +43,11 @@ if [ "$startnModified" == "0" ]; then
 fi
 
 #Set AS Server Off-line
-curl -s -o /dev/null -d {"status":1} http://$apServIp:9763/ServStat
+$CURLCMD -o /dev/null -d {"status":1} http://$apServIp:9763/ServStat
 until [ "$nxstatus" == "down" ]
 do
 	/bin/sleep 3
-	nxstatus=$(curl -s "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("$apServIp")) | .status')
+	nxstatus=$($CURLCMD "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("$apServIp")) | .status')
 	echo "nxstatus=$nxstatus"
 done
 
@@ -54,11 +55,11 @@ done
 echo "$BASEDIR/testdeploy.sh $apServIp $srcPath"
 
 #Set AS Server Off-line
-curl -s -o /dev/null -d {"status":0} http://$apServIp:9763/ServStat
+$CURLCMD -o /dev/null -d {"status":0} http://$apServIp:9763/ServStat
 until [ "$nxstatus" == "up" ]
 do
 	/bin/sleep 3
-	nxstatus=$(curl -s "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("$apServIp")) | .status')
+	nxstatus=$($CURLCMD "http://nginx.kilait.com/status?format=json"|jq -r '.servers.server[] | select(.name | contains("$apServIp")) | .status')
 	echo "nxstatus=$nxstatus"
 done
 
