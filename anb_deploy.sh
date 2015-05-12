@@ -53,7 +53,7 @@ else
 fi
 
 #backup code
-backupcode=`ansible $1 -s -m shell -a "$home/codeback.sh"|grep success|cut -d '|' -f2|cut -d ' ' -f2|cut -d ' ' -f1`
+backupcode=`ansible $1 -s -m shell -a "$home/codeback.sh $codedir"|grep success|cut -d '|' -f2|cut -d ' ' -f2|cut -d ' ' -f1`
 if [ $backupcode == "success" ];then
         echo '{action:run,name:codebackup,status:OK}'
 else
