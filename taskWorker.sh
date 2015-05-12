@@ -60,7 +60,7 @@ if [ "$devops_env" == "google" ]; then
 	deploy_st=$($BASEDIR/testdeploy.sh $apServIp $srcPath)
 	echo $deploy_st
 else
-	echo "$BASEDIR/testdeploy.sh $apServIp $srcPath"
+	echo "$BASEDIR/anb_deploy.sh $apServIp $srcPath"
 fi
 #Set AS Server On-line
 $CURLCMD -o /dev/null -d {"status":0} http://$apServIp:9763/ServStat
