@@ -57,7 +57,7 @@ done
 
 #執行 Deploy
 if [ "$devops_env" == "google" ]; then
-	deploy_st=$($BASEDIR/testdeploy.sh $apServIp $srcPath)
+	deploy_st=$($BASEDIR/anb_deploy.sh $apServIp $srcPath)
 	echo $deploy_st
 else
 	echo "$BASEDIR/anb_deploy.sh $apServIp $srcPath"
