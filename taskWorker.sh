@@ -12,6 +12,7 @@ apiManPort="3000"
 
 #取得 task list
 taskJson=$($CURLCMD "http://$apiManIp:$apiManPort/mod/task/gettask/deploy")
+echo "http://$apiManIp:$apiManPort/mod/task/gettask/deploy"
 #echo $json_input
 #ping $(echo $json_input|$JQCMD -r '.taskParams.apServIp')
 taskId=$(echo $taskJson|$JQCMD -r '._id')
@@ -31,6 +32,7 @@ fi
 
 #鎖定task
 startJson=$($CURLCMD "http://$apiManIp:$apiManPort/mod/task/setTask/$taskId/start")
+echo "http://$apiManIp:$apiManPort/mod/task/gettask/deploy"
 echo $startJson
 startState=$(echo $startJson|$JQCMD -r '.state')
 startnModified=$(echo $startJson|$JQCMD -r '.nModified')
