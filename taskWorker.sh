@@ -62,11 +62,14 @@ if [ "$devops_env" == "google" ]; then
 	deploy_st=$($BASEDIR/anb_deploy.sh $apServIp $srcPath)
 	for anb_stat in $deploy_st
 	do
+		cmd_name=$(echo $anb_stat|tr -d '\{\}'|cut -d"," -f2|cut -d":" -f2)
 		cmd_stat=$(echo $anb_stat|tr -d '\{\}'|cut -d"," -f3|cut -d":" -f2|tr '[:lower:]' '[:upper:]')
 		if [ "$cmd_stat" != "OK" ]; then
-			echo "Error while deploying"
+			$CURLCMD "http://$apiManIp:$apiManPort/mod/task/setstatus/$taskId/error"
+			echo "Error on $cmd_name"
 			exit 1
 		fi
+		echo "$cmd_name was OK."
 	done
 else
 	echo "$BASEDIR/anb_deploy.sh $apServIp $srcPath"
