@@ -27,7 +27,7 @@ apiVerDeploy=$(echo $taskJson|$JQCMD -r '.taskParams.deploy')
 #echo "apServIP: $apServIp"
 if [ -z "$taskId" ] || [ "$taskId" == "null" ]; then
     echo "no task list."
-    exit 1
+    exit 0
 fi
 
 #鎖定task
