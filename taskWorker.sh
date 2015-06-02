@@ -60,7 +60,14 @@ done
 #執行 Deploy
 if [ "$devops_env" == "google" ]; then
 	deploy_st=$($BASEDIR/anb_deploy.sh $apServIp $srcPath)
-	echo $deploy_st
+	for anb_stat in $deploy_st
+	do
+		cmd_stat=$(echo $anb_stat|tr -d '\{\}'|cut -d"," -f3|cut -d":" -f2|tr '[:lower:]' '[:upper:]')
+		if [ "$cmd_stat" != "OK" ]; then
+			echo "Error while deploying"
+			exit 1
+		fi
+	done
 else
 	echo "$BASEDIR/anb_deploy.sh $apServIp $srcPath"
 fi
