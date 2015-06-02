@@ -65,8 +65,8 @@ if [ "$devops_env" == "google" ]; then
 		cmd_name=$(echo $anb_stat|$JQCMD -r '.name')
 		cmd_stat=$(echo $anb_stat|$JQCMD -r '.status')
 		if [ "$cmd_stat" != "OK" ]; then
-			$CURLCMD "http://$apiManIp:$apiManPort/mod/task/setstatus/$taskId/error"
 			echo "Error on $cmd_name"
+			$CURLCMD "http://$apiManIp:$apiManPort/mod/task/setstatus/$taskId/error"
 			exit 1
 		fi
 		echo "$cmd_name was OK."
