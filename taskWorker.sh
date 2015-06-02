@@ -62,8 +62,8 @@ if [ "$devops_env" == "google" ]; then
 	deploy_st=$($BASEDIR/anb_deploy.sh $apServIp $srcPath)
 	for anb_stat in $deploy_st
 	do
-		cmd_name=$(echo $anb_stat|tr -d '\{\}'|cut -d"," -f2|cut -d":" -f2)
-		cmd_stat=$(echo $anb_stat|tr -d '\{\}'|cut -d"," -f3|cut -d":" -f2|tr '[:lower:]' '[:upper:]')
+		cmd_name=$(echo $anb_stat|$JQCMD -r '.name')
+		cmd_stat=$(echo $anb_stat|$JQCMD -r '.status')
 		if [ "$cmd_stat" != "OK" ]; then
 			$CURLCMD "http://$apiManIp:$apiManPort/mod/task/setstatus/$taskId/error"
 			echo "Error on $cmd_name"
