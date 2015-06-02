@@ -45,12 +45,12 @@ else
 fi
 
 #複製還原code shell 過去
-pushreback=`ansible $1 -s -m copy -a "src=$home/recode.sh dest=$home/recode.sh owner=root group=root mode=755"|grep success|cut -d '|' -f2|cut -d ' ' -f2|cut -d ' ' -f1`
-if [ $pushreback == "success" ];then
-        echo '{action:push,name:codereback,status:OK}'
-else
-        echo '{action:push,name:codereback,status:FAILED}'
-fi
+#pushreback=`ansible $1 -s -m copy -a "src=$home/recode.sh dest=$home/recode.sh owner=root group=root mode=755"|grep success|cut -d '|' -f2|cut -d ' ' -f2|cut -d ' ' -f1`
+#if [ $pushreback == "success" ];then
+#        echo '{action:push,name:codereback,status:OK}'
+#else
+#        echo '{action:push,name:codereback,status:FAILED}'
+#fi
 
 #backup code
 backupcode=`ansible $1 -s -m shell -a "$home/codeback.sh $codedir"|grep success|cut -d '|' -f2|cut -d ' ' -f2|cut -d ' ' -f1`
