@@ -4,6 +4,13 @@ NFS_SHARE="/opt/jk_builds/"
 echo "Hello Shell"
 echo "BUILD_NUMBER : ${BUILD_NUMBER}"
 echo "BRANCH : ${GIT_BRANCH}"
+if [ "${GIT_BRANCH}" == "origin/lab" ];then
+  DEPLOY_BRANCH="lab"
+elif [ "${GIT_BRANCH}" == "origin/ol" ];then
+  DEPLOY_BRANCH="ol"
+elif [ "${GIT_BRANCH}" == "origin/master" ];then
+  DEPLOY_BRANCH="master"
+fi
 echo "JOB_NAME : ${JOB_NAME}"
 echo "BUILD_ID : ${BUILD_ID}"
 echo "COMMIT_ID : ${GIT_COMMIT}"
@@ -15,13 +22,13 @@ echo "result:$job_status"
 if [ "$job_status" == "SUCCESS" ]
 then
     echo "OK"
-    cd ${WORKSPACE}/dist
+    cd ${WORKSPACE}/target/${DEPLOY_BRANCH}
     #tar zcvf ${NFS_SHARE}/${JOB_NAME}_${BUILD_ID}.tar.gz ./*
     WARFILES=$(ls *.war)
-    if [ ! -d "${NFS_SHARE}/${JOB_NAME}/${GIT_COMMIT}" ];then
-        mkdir -p ${NFS_SHARE}/${JOB_NAME}/${GIT_COMMIT}
+    if [ ! -d "${NFS_SHARE}/${JOB_NAME}/${GIT_COMMIT}${DEPLOY_BRANCH}" ];then
+        mkdir -p ${NFS_SHARE}/${JOB_NAME}/${GIT_COMMIT}${DEPLOY_BRANCH}
     fi
-    cp $WARFILES ${NFS_SHARE}/${JOB_NAME}/${GIT_COMMIT}
+    cp $WARFILES ${NFS_SHARE}/${JOB_NAME}/${GIT_COMMIT}${DEPLOY_BRANCH}
     WARARRAY=""
     declare -i idx=0
     for filename in $WARFILES
@@ -32,7 +39,7 @@ then
         WARARRAY="$WARARRAY\"$filename\""
         idx=$idx+1
     done
-    curl --silent -H "Content-Type: application/json" -X POST -d "{ \"JOB_NAME\" : \"${JOB_NAME}\", \"BRANCH\" : \"${GIT_BRANCH}\", \"BUILD_ID\" : \"${BUILD_ID}\", \"COMMIT_ID\" : \"${GIT_COMMIT}\", \"JOB_STATUS\" : \"${job_status}\", \"WORKSPACE\" : \"${WORKSPACE}\", \"BUILD_URL\" : \"${BUILD_URL}\", \"PKG_FILE\" : [$WARARRAY] }" http://${DEVOPSYS_IP}/mod/report/receive/ci
+    curl --silent -H "Content-Type: application/json" -X POST -d "{ \"JOB_NAME\" : \"${JOB_NAME}\", \"BRANCH\" : \"${GIT_BRANCH}\", \"BUILD_ID\" : \"${BUILD_ID}\", \"DEPLOY_ID\" : \"${GIT_COMMIT}${DEPLOY_BRANCH}\", \"COMMIT_ID\" : \"${GIT_COMMIT}\", \"JOB_STATUS\" : \"${job_status}\", \"WORKSPACE\" : \"${WORKSPACE}\", \"BUILD_URL\" : \"${BUILD_URL}\", \"PKG_FILE\" : [$WARARRAY] }" http://${DEVOPSYS_IP}/mod/report/receive/ci
 else
   echo "BUILD FAILURE: Other build is unsuccessful or status could not be obtained."
   exit 1
